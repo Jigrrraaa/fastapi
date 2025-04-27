@@ -13,8 +13,13 @@ class PostCreate(PostBase):
 class Users(BaseModel):
      id : int
      email : EmailStr
+     phone_number: str
      created_at : datetime
 
+     class Config:
+          orm_mode = True
+     
+     
 class Post(PostBase):
      id : int
      created_at: datetime
@@ -31,9 +36,9 @@ class PostOut(BaseModel):
      class Config:
         orm_mode = True
 
-
 class UserCreate(BaseModel):
      email : EmailStr
+     phone_number: str
      password : str
 
 
