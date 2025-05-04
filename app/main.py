@@ -32,7 +32,7 @@ app.include_router(vote.router)
 
 @app.get("/get")
 def hello_Message():
-     return {"message": "Welcome to my api "}
+     return {"message": "Welcome to my api"}
 
 
 
