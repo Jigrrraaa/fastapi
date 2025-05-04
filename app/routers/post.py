@@ -11,7 +11,7 @@ router = APIRouter(
      tags=["Posts"]
 )
 
-@router.get("", response_model= List[schemas.PostOut],)
+@router.get("", response_model= List[schemas.PostOut])
 def get_Posts(db: Session = Depends(get_db),
               user :models.User = Depends(oauth2.get_current_user),
               limit : int = 10,
@@ -95,7 +95,7 @@ def delete_post(id:int, db:Session = Depends(get_db), user :models.User = Depend
      # my_posts.pop(index)
      return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@router.put("/{id}", response_model= schemas.Post)
+@router.put("/{id}", status_code=status.HTTP_200_OK, response_model= schemas.Post)
 def update_post(id:int, updated_post: schemas.PostCreate, db:Session = Depends(get_db), user :models.User = Depends(oauth2.get_current_user)):
      # cursor.execute("""UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING * """, (post.title, post.content, post.published, str(id),))
      # updated_posts = cursor.fetchone()
