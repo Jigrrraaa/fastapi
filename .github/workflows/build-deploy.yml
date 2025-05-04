@@ -13,5 +13,11 @@ jobs:
     steps:
       - name: pulling git repo
         uses: actions/checkout@v4
-      - name: print hello world
-        run: echo "hello world"
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: upgrade pip
+        run: python -m pip install --upgrade pip
+      - name: install all dependencies
+        run: pip install -r requirements.txt
