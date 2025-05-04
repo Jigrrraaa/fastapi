@@ -117,7 +117,13 @@ def test_posts(test_user, test_user1,session):
         "title" : "fourth Title",
         "content" : "fourth contenet",
         "who_created_user" : test_user1['id']
+    },
+    {
+        "title" : "Fifth Title",
+        "content" : "Fifth contenet",
+        "who_created_user" : test_user1['id']
     }]
+    
 
     def create_post_model(post):
         return models.Posts(**post)
