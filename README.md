@@ -1,6 +1,3 @@
-# fastapi
-Fast Api Learning Project
-
 ## What this project does
 
 This project demonstrates how to build and test RESTful APIs using FastAPI. It provides example endpoints, dependency management, and automated testing with pytest. The repository is intended for learning and experimenting with FastAPI features and best practices.
