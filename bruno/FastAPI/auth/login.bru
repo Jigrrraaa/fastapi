@@ -1,0 +1,21 @@
+meta {
+  name: Login
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://127.0.0.1:8000/login
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  username: test@example.com
+  password: password123
+}
+
+docs {
+  Login with email and password to get bearer token.
+  Save the access_token from response for other requests.
+}

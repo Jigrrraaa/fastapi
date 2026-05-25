@@ -1,0 +1,19 @@
+meta {
+  name: Get Post
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://127.0.0.1:8000/posts/1
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Get a specific post by ID. Replace 1 with actual post ID.
+  Requires Bearer token from login.
+}

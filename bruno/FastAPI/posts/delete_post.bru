@@ -1,0 +1,20 @@
+meta {
+  name: Delete Post
+  type: http
+  seq: 8
+}
+
+delete {
+  url: http://127.0.0.1:8000/posts/1
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Delete a post by ID. Replace 1 with actual post ID.
+  Only the post owner can delete their post.
+  Requires Bearer token from login.
+}

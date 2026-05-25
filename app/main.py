@@ -1,13 +1,13 @@
 from fastapi import FastAPI
 from app.routers import post,users, auth, vote
-from . import models     
-from .database import engine
-from .config import setting
 from fastapi.middleware.cors import CORSMiddleware 
 #use it to manually create table amd db updates replaced by alembic (data migration tool)
-# models.Base.metadata.create_all(bind = engine)
+# Base.metadata.create_all(bind = engine)
 
-app = FastAPI()
+app = FastAPI(swagger_ui_parameters={"syntaxHighlight": False})
+
+
+# app = FastAPI()
 
 origins = [
           # "https://www.google.com"

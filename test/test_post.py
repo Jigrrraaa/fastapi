@@ -1,4 +1,4 @@
-from typing import List
+# from typing import List
 from app import schemas
 import pytest
 from fastapi import status

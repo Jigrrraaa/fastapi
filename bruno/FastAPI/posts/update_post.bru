@@ -1,0 +1,29 @@
+meta {
+  name: Update Post
+  type: http
+  seq: 7
+}
+
+put {
+  url: http://127.0.0.1:8000/posts/1
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "Updated Title",
+    "content": "Updated content of the post",
+    "published": true
+  }
+}
+
+docs {
+  Update a post by ID. Replace 1 with actual post ID.
+  Only the post owner can update their post.
+  Requires Bearer token from login.
+}

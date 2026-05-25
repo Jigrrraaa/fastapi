@@ -1,0 +1,23 @@
+meta {
+  name: Create User
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://127.0.0.1:8000/User
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "test@example.com",
+    "phone_number": "1234567890",
+    "password": "password123"
+  }
+}
+
+docs {
+  Create a new user account
+}

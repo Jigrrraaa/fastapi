@@ -1,0 +1,20 @@
+meta {
+  name: List Posts
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://127.0.0.1:8000/posts?limit=10&skip=0&search=
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  List all posts with pagination and search.
+  Requires Bearer token from login.
+  Use {{token}} variable - set it in environment with your bearer token.
+}

@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import session
-from ..database import get_db
-from .. import schemas, utils, models, oauth2
+from ..Schemas.database import get_db
+from .. import schemas, utils, oauth2
+from ..Schemas import User
 
 router = APIRouter(tags= ['Authentication'])
 
@@ -10,7 +11,7 @@ router = APIRouter(tags= ['Authentication'])
 def login(user_creaditials: OAuth2PasswordRequestForm = Depends() , db:session = Depends(get_db)):
     if not user_creaditials.username or not user_creaditials.password:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail= "Username and password are required")
-    user = db.query(models.User).filter(models.User.email == user_creaditials.username).first()
+    user = db.query(User).filter(User.email == user_creaditials.username).first()
 
     error = HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f'Invalid Creditails')
     if not user:

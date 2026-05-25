@@ -1,0 +1,30 @@
+meta {
+  name: Vote on Post
+  type: http
+  seq: 9
+}
+
+post {
+  url: http://127.0.0.1:8000/vote
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "post_id": 1,
+    "dir": 1
+  }
+}
+
+docs {
+  Vote on a post.
+  post_id: ID of the post to vote on
+  dir: 1 to add vote, 0 to remove vote
+  Cannot vote on own posts.
+  Requires Bearer token from login.
+}

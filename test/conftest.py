@@ -2,16 +2,36 @@
 ### have created database connection so it will be fetched from all file
 from fastapi.testclient import TestClient
 import pytest
+import psycopg
+from psycopg import sql
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.config import test_setting
-from app.database import Base, get_db
+from app.Schemas.database import Base, get_db
+from app.Schemas import Posts
 from app.main import app
-from app import models
-from alembic import command
+# from alembic import command
 from app.oauth2 import create_access_token
 
-SQLALCHEMY_DATABASE_URL = f'postgresql+psycopg://{test_setting.database_username}:{test_setting.database_password}@{test_setting.database_hostname}/{test_setting.database_name}'
+SQLALCHEMY_DATABASE_URL = f"postgresql+psycopg://{test_setting.database_username}:{test_setting.database_password}@{test_setting.database_hostname}:{test_setting.database_port}/{test_setting.database_name}"
+
+
+def ensure_test_database_exists() -> None:
+    with psycopg.connect(
+        host=test_setting.database_hostname,
+        port=test_setting.database_port,
+        user=test_setting.database_username,
+        password=test_setting.database_password,
+        dbname="postgres",
+        autocommit=True,
+    ) as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT 1 FROM pg_database WHERE datname = %s", (test_setting.database_name,))
+            if cur.fetchone() is None:
+                cur.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(test_setting.database_name)))
+
+
+ensure_test_database_exists()
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
@@ -126,13 +146,13 @@ def test_posts(test_user, test_user1,session):
     
 
     def create_post_model(post):
-        return models.Posts(**post)
+        return Posts(**post)
     post_map = map(create_post_model, post_data)
     posts = list(post_map)
     session.add_all(posts)
     session.commit()
 
-    posts = session.query(models.Posts).all()
+    posts = session.query(Posts).all()
     return posts
 
 

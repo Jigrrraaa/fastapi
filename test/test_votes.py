@@ -1,15 +1,15 @@
 from fastapi import status
 import pytest
-from app import models
+from app.Schemas import Vote
 
 @pytest.fixture()
 def test_vote(session, test_posts, test_user, test_user1):
     vote_data = [{"post_id" : test_posts[3].id, "user_id" : test_user['id']},
                  {"post_id" : test_posts[1].id, "user_id" : test_user1['id']}]
-    # new_vote = models.Vote(vote_data)
+    # new_vote = Vote(vote_data)
     # session.add(new_vote)
     def create_vote_model(votes):
-        return models.Vote(**votes)
+        return Vote(**votes)
     vote_map = map(create_vote_model, vote_data)
     votes = list(vote_map)
     session.add_all(votes)

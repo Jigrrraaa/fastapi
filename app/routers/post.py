@@ -3,8 +3,9 @@ from fastapi import HTTPException, Response, status, Depends, APIRouter
 # from psycopg.rows import dict_row
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from .. import models, schemas, oauth2
-from ..database import get_db
+from .. import schemas, oauth2
+from ..Schemas import Posts, User, Vote
+from ..Schemas.database import get_db
 
 router = APIRouter(
      prefix="/posts",
@@ -13,19 +14,19 @@ router = APIRouter(
 
 @router.get("", response_model= List[schemas.PostOut])
 def get_Posts(db: Session = Depends(get_db),
-              user :models.User = Depends(oauth2.get_current_user),
+              user :User = Depends(oauth2.get_current_user),
               limit : int = 10,
               skip :int = 0, 
               search : Optional[str] = ""):
      # old method to get data from sql
      # cursor.execute("""SELECT * FROM Posts""")
      # posts = cursor.fetchall()
-     # posts = db.query(models.Posts).filter(models.Posts.title.contains(search)).limit(limit).offset(skip).all()
+       # posts = db.query(Posts).filter(Posts.title.contains(search)).limit(limit).offset(skip).all()
      results = (
-        db.query(models.Posts, func.count(models.Vote.post_id).label("votes"))
-        .join(models.Vote, models.Vote.post_id == models.Posts.id, isouter=True)
-        .filter(models.Posts.title.contains(search))
-        .group_by(models.Posts.id)
+            db.query(Posts, func.count(Vote.post_id).label("votes"))
+            .join(Vote, Vote.post_id == Posts.id, isouter=True)
+            .filter(Posts.title.contains(search))
+            .group_by(Posts.id)
         .limit(limit)
         .offset(skip)
         .all()
@@ -33,11 +34,11 @@ def get_Posts(db: Session = Depends(get_db),
      return [{"post": post, "votes": votes} for post, votes in results]
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model= schemas.Post)
-def create_Post(post: schemas.PostCreate, db:Session = Depends(get_db), user :models.User = Depends(oauth2.get_current_user)):
+def create_Post(post: schemas.PostCreate, db:Session = Depends(get_db), user :User = Depends(oauth2.get_current_user)):
      # cursor.execute("""INSERT INTO posts (title,  content, published) VALUES (%s, %s, %s) RETURNING *""", (post.title, post.content, post.published))
      # new_posts = cursor.fetchone()
      # conn.commit()
-     new_posts = models.Posts(who_created_user = user.id, **post.dict())
+     new_posts = Posts(who_created_user = user.id, **post.dict())
      db.add(new_posts)
      db.commit()
      db.refresh(new_posts)
@@ -49,17 +50,17 @@ def create_Post(post: schemas.PostCreate, db:Session = Depends(get_db), user :mo
 #      return{"Latest_Post": latest_post}
 
 @router.get("/{id}", response_model= schemas.PostOut)
-def get_post(id:int, db:Session = Depends(get_db),user :models.User = Depends(oauth2.get_current_user)):
+def get_post(id:int, db:Session = Depends(get_db),user :User = Depends(oauth2.get_current_user)):
      # print(type(id))
      # cursor.execute("""SELECT * FROM posts WHERE id = %s """, (str(id),))
      # get_posts = cursor.fetchone()
      # print(user.email)
-     # post = db.query(models.Posts).filter(models.Posts.id == id).first()
+       # post = db.query(Posts).filter(Posts.id == id).first()
      post_data = (
-        db.query(models.Posts, func.count(models.Vote.post_id).label("votes"))
-        .join(models.Vote, models.Vote.post_id == models.Posts.id, isouter=True)
-        .filter(models.Posts.id == id)
-        .group_by(models.Posts.id)
+            db.query(Posts, func.count(Vote.post_id).label("votes"))
+            .join(Vote, Vote.post_id == Posts.id, isouter=True)
+            .filter(Posts.id == id)
+            .group_by(Posts.id)
         .first()
      )
      # conn.commit()
@@ -74,14 +75,14 @@ def get_post(id:int, db:Session = Depends(get_db),user :models.User = Depends(oa
 
 
 @router.delete("/{id}")
-def delete_post(id:int, db:Session = Depends(get_db), user :models.User = Depends(oauth2.get_current_user)):
+def delete_post(id:int, db:Session = Depends(get_db), user :User = Depends(oauth2.get_current_user)):
 
      # cursor.execute("""DELETE FROM posts WHERE id = %s RETURNING * """, (str(id),))
      # deleted_posts = cursor.fetchone()
      # conn.commit()
      # index = find_index_post(id)
 
-     post_query = db.query(models.Posts).filter(models.Posts.id == id)
+     post_query = db.query(Posts).filter(Posts.id == id)
      post = post_query.first()
 
      if post == None:
@@ -96,12 +97,12 @@ def delete_post(id:int, db:Session = Depends(get_db), user :models.User = Depend
      return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.put("/{id}", status_code=status.HTTP_200_OK, response_model= schemas.Post)
-def update_post(id:int, updated_post: schemas.PostCreate, db:Session = Depends(get_db), user :models.User = Depends(oauth2.get_current_user)):
+def update_post(id:int, updated_post: schemas.PostCreate, db:Session = Depends(get_db), user :User = Depends(oauth2.get_current_user)):
      # cursor.execute("""UPDATE posts SET title = %s, content = %s, published = %s WHERE id = %s RETURNING * """, (post.title, post.content, post.published, str(id),))
      # updated_posts = cursor.fetchone()
      # conn.commit()
 
-     post_query = db.query(models.Posts).filter(models.Posts.id == id)
+     post_query = db.query(Posts).filter(Posts.id == id)
      post = post_query.first()
      # post = post_query.first()
      if post == None:

@@ -1,6 +1,9 @@
 from fastapi import Depends, status, HTTPException
 from jose import JWTError, jwt
-from . import schemas,database, models
+
+from .Schemas.database import get_db
+from .Schemas import User
+from . import schemas
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from fastapi.security import OAuth2PasswordBearer
@@ -39,10 +42,10 @@ def verify_access_token(token: str, creditals_exception):
     
     return token_data
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     creditials_exception = HTTPException(status_code= status.HTTP_401_UNAUTHORIZED, detail=f" Could not validate the creditials", headers={"WWW-Authenticate" : "Bearer"})
 
     token = verify_access_token(token, creditials_exception)
-    user = db.query(models.User).filter(models.User.id == token.id).first()
+    user = db.query(User).filter(User.id == token.id).first()
     return user
     
